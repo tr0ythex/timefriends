@@ -1,0 +1,17 @@
+# Read about fixtures at http://api.rubyonrails.org/classes/ActiveRecord/FixtureSet.html
+
+one:
+  body: MyText
+  time: 2015-12-15 09:42:54
+  place: MyString
+  latitude: 9.99
+  longitude: 9.99
+  auto: false
+
+two:
+  body: MyText
+  time: 2015-12-15 09:42:54
+  place: MyString
+  latitude: 9.99
+  longitude: 9.99
+  auto: false

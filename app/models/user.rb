@@ -2,7 +2,10 @@ class User < ActiveRecord::Base
   before_validation :generate_auth_token
   
   has_secure_password # presence of password
-  has_friendship
+  has_friendship # has_friendship gem
+  has_and_belongs_to_many :backgrounds
+  has_many :invites_by_posts, class_name: 'InvitedFriend', dependent: :destroy
+  has_many :posts, through: :invites_by_posts
   
   validates :auth_token, presence: true, uniqueness: true
   validates :login, presence: true, uniqueness: true
