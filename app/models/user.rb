@@ -1,7 +1,17 @@
 class User < ActiveRecord::Base
-  before_validation :generate_authentication_token
+  before_validation :generate_auth_token
   
-  has_secure_password
+  has_secure_password # presence of password
+  has_friendship
+  
+  validates :auth_token, presence: true, uniqueness: true
+  validates :login, presence: true, uniqueness: true
+  validates :email, presence: true, uniqueness: true
+  validates :hide_acc, inclusion: [true, false]
+  validates :first_name, presence: true
+  validates :last_name, presence: true
+  # validates :age, presence: true
+  # validates :sex, presence: true
     
   private
   
