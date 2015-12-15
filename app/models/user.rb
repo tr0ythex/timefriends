@@ -1,6 +1,5 @@
 class User < ActiveRecord::Base
   before_validation :generate_auth_token
-  before_save :default_values
   
   has_secure_password # presence of password
   has_friendship # has_friendship gem
@@ -28,9 +27,5 @@ class User < ActiveRecord::Base
       self.auth_token = SecureRandom.base64(64)
       break unless User.find_by(auth_token: auth_token)
     end
-  end
-  
-  def default_values
-    self.hide_acc ||= false
   end
 end
