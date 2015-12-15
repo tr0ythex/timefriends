@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20151215100310) do
+ActiveRecord::Schema.define(version: 20151215103402) do
 
   create_table "backgrounds", force: :cascade do |t|
     t.binary   "bg"
@@ -26,6 +26,15 @@ ActiveRecord::Schema.define(version: 20151215100310) do
 
   add_index "backgrounds_users", ["background_id"], name: "index_backgrounds_users_on_background_id"
   add_index "backgrounds_users", ["user_id"], name: "index_backgrounds_users_on_user_id"
+
+  create_table "comments", force: :cascade do |t|
+    t.string   "author"
+    t.integer  "post_id"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+  end
+
+  add_index "comments", ["post_id"], name: "index_comments_on_post_id"
 
   create_table "friendships", force: :cascade do |t|
     t.integer  "friendable_id"
