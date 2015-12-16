@@ -9,6 +9,7 @@ Rails.application.routes.draw do
       get 'send_friendship_offer_to/:login', to: 'users#send_friendship_offer'
       get 'accept_friendship_offer_from/:login', to: 'users#accept_friendship_offer'
       get 'friendship_offers', to: 'users#friendship_offers'
+      get 'friends', to: 'users#friends'
     end
   end
 end

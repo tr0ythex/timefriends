@@ -1,5 +1,5 @@
 class Api::V1::UsersController < ApplicationController
-  before_action :authenticate_with_token!, only: [:update, :destroy, :friendship_offer, ]
+  before_action :authenticate_with_token!, only: [:update, :destroy, :send_friendship_offer, :accept_friendship_offer, :friendship_offers, :friends]
   
   def index
     @users = User.all
@@ -54,6 +54,10 @@ class Api::V1::UsersController < ApplicationController
   
   def friendship_offers
     render json: current_user.requested_friends.to_a
+  end
+  
+  def friends
+    render json: current_user.friends.to_a
   end
     
   private
