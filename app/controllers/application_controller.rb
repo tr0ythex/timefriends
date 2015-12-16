@@ -9,4 +9,12 @@ class ApplicationController < ActionController::Base
   #   return if request.format == :json
   #   render :nothing => true, :status => 406  
   # end 
+  
+  private
+  
+  def current_user
+    @current_user ||= User.find_by(auth_token: request.headers['Authorization'])
+  end
+  
+  helper_method :current_user
 end
