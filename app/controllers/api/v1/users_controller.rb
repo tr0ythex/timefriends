@@ -1,5 +1,13 @@
 class Api::V1::UsersController < ApplicationController
-  before_action :authenticate_with_token!, only: [:update, :destroy]
+  before_action :authenticate_with_token!, only: [:update, :destroy, :friendship_offer, ]
+  
+  def index
+    @users = User.all
+    @users = @users.limit(params[:limit]) if params[:limit]
+    @users = @users.offset(params[:offset]) if params[:offset]
+    
+    render json: @users
+  end
   
   def show
   end
@@ -7,7 +15,6 @@ class Api::V1::UsersController < ApplicationController
   def create
     @user = User.create(user_params)
     if @user.save
-      # render json: @user, status: :created
       head :created
     else
       render json: { errors: @user.errors }, status: :unprocessable_entity
@@ -18,7 +25,7 @@ class Api::V1::UsersController < ApplicationController
     user = current_user
 
     if user.update(user_params)
-      render json: user, status: :ok
+      head :ok
     else
       render json: user.errors, status: :unprocessable_entity
     end
@@ -27,6 +34,26 @@ class Api::V1::UsersController < ApplicationController
   def destroy
     current_user.destroy
     head :no_content
+  end
+  
+  def send_friendship_offer
+    if current_user.friend_request(User.find_by(login: params[:login]))
+      render json: { info: "Invitation sent" }, status: :ok
+    else
+      render json: { errors: "Invitation has already been sent" }, status: :bad_request
+    end
+  end
+  
+  def accept_friendship_offer
+    if current_user.accept_request(User.find_by(login: params[:login]))
+      render json: { info: "Invitation accepted" }
+    else
+      render json: { errors: "Invitation has already been accepted" }, status: :bad_request
+    end
+  end
+  
+  def friendship_offers
+    render json: current_user.requested_friends.to_a
   end
     
   private
