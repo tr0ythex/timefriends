@@ -16,5 +16,9 @@ class ApplicationController < ActionController::Base
     @current_user ||= User.find_by(auth_token: request.headers['Authorization'])
   end
   
-  helper_method :current_user
+  def authenticate_with_token!
+    head :unauthorized unless current_user.present?
+  end
+  
+  # helper_method :current_user
 end
