@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20151215130911) do
+ActiveRecord::Schema.define(version: 20151216153309) do
 
   create_table "backgrounds", force: :cascade do |t|
     t.binary   "bg"
@@ -45,16 +45,6 @@ ActiveRecord::Schema.define(version: 20151215130911) do
     t.datetime "updated_at"
     t.integer  "blocker_id"
   end
-
-  create_table "invited_friends", force: :cascade do |t|
-    t.integer  "post_id"
-    t.integer  "user_id"
-    t.datetime "created_at", null: false
-    t.datetime "updated_at", null: false
-  end
-
-  add_index "invited_friends", ["post_id"], name: "index_invited_friends_on_post_id"
-  add_index "invited_friends", ["user_id"], name: "index_invited_friends_on_user_id"
 
   create_table "posts", force: :cascade do |t|
     t.text     "body"

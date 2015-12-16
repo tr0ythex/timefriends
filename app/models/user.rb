@@ -8,8 +8,8 @@ class User < ActiveRecord::Base
   
   has_and_belongs_to_many :backgrounds
   
-  has_many :invites_by_posts, class_name: 'InvitedFriend', dependent: :destroy
-  has_many :posts, through: :invites_by_posts
+  # has_many :invites_by_posts, class_name: 'InvitedFriend', dependent: :destroy
+  # has_many :posts, through: :invites_by_posts
   
   validates :auth_token, uniqueness: true
   validates :login, presence: true, uniqueness: true

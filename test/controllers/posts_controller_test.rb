@@ -1,6 +1,6 @@
 require 'test_helper'
 
-class InvitedFriendTest < ActiveSupport::TestCase
+class PostsControllerTest < ActionController::TestCase
   # test "the truth" do
   #   assert true
   # end
