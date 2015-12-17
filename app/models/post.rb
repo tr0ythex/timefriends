@@ -5,5 +5,6 @@ class Post < ActiveRecord::Base
   belongs_to :user
   has_many :comments
   
-  validates :body, presence: true
+  validates :body, :time, :place, presence: true
+  validates :auto, inclusion: [true, false]
 end

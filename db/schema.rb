@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20151216153309) do
+ActiveRecord::Schema.define(version: 20151217080929) do
 
   create_table "backgrounds", force: :cascade do |t|
     t.binary   "bg"
@@ -48,7 +48,7 @@ ActiveRecord::Schema.define(version: 20151216153309) do
 
   create_table "posts", force: :cascade do |t|
     t.text     "body"
-    t.time     "time"
+    t.datetime "time"
     t.string   "place"
     t.decimal  "latitude"
     t.decimal  "longitude"

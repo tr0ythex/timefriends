@@ -1,12 +1,16 @@
 class Api::V1::PostsController < ApplicationController
-  before_action :authenticate_with_token!, only: :create
+  before_action :authenticate_with_token!, only: [:create, :index]
+  
+  def index
+    render json: current_user.posts
+  end
   
   def create
-    post1 = current_user.posts.build(post_params)
-    if post1.save
-      render json: post1, status: :created
+    post = current_user.posts.build(post_params)
+    if post.save
+      render json: post, status: :created
     else
-      render json: { errors: post1.errors }, status: :unprocessable_entity
+      render json: { errors: post.errors }, status: :unprocessable_entity
     end
   end
   

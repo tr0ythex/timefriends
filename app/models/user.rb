@@ -12,8 +12,8 @@ class User < ActiveRecord::Base
   # has_many :posts, through: :invites_by_posts
   
   validates :auth_token, uniqueness: true
-  validates :login, presence: true, uniqueness: true
-  validates :email, presence: true, uniqueness: true
+  validates :login, :email, presence: true, uniqueness: true
+  # validates :email, presence: true, uniqueness: true
   validates :hide_acc, inclusion: [true, false]
   # validates :first_name, presence: true
   # validates :last_name, presence: true
