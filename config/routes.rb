@@ -3,7 +3,8 @@ Rails.application.routes.draw do
     namespace :v1 do
       resources :users, only: :create
       resource :users, only: :update do
-        resources :posts, only: [:create, :index]
+        resources :posts, only: [:create]
+        get 'posts(/:date)', to: 'posts#index'
       end
       # post 'users/posts', to: 'posts#create'
       post 'login', to: 'sessions#create', as: 'login'
