@@ -1,10 +1,11 @@
 Rails.application.routes.draw do
   namespace :api, constraints: { format: 'json' } do
     namespace :v1 do
-      resources :users, only: :create
-      resource :users, only: :update do
-        resources :posts, only: [:create]
+      resources :users, only: :create do
         get 'posts(/:date)', to: 'posts#index'
+      end
+      resource :users, only: [:update, :create] do
+        resources :posts, only: [:create]
       end
       # post 'users/posts', to: 'posts#create'
       post 'login', to: 'sessions#create', as: 'login'

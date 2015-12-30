@@ -2,11 +2,11 @@ class Api::V1::PostsController < ApplicationController
   before_action :authenticate_with_token!, only: [:create, :index]
   
   def index
+    @user = User.find(params)
     if params[:date]
-      render json: current_user.posts.where("strftime('%Y-%m-%d', created_at) = ?", params[:date])
-      # render json: params[:year]
+      render json: current_user.posts.includes(:comments).where("strftime('%Y-%m-%d', created_at) = ?", params[:date])
     else
-      render json: current_user.posts
+      render json: current_user.posts.includes(:comments)
     end
   end
   
