@@ -59,3 +59,8 @@
 #     auth_methods: %w(publickey password)
 #     # password: 'please use keys'
 #   }
+server '194.58.122.63', user: 'timefriends', roles: %w{web app db}
+
+set :ssh_options, {
+  keys: '~/.ssh/id_rsa'
+}
