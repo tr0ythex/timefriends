@@ -2,7 +2,7 @@ class CreatePosts < ActiveRecord::Migration
   def change
     create_table :posts do |t|
       t.text :body
-      t.time :time
+      t.time :datetime
       t.string :place
       t.decimal :latitude
       t.decimal :longitude
