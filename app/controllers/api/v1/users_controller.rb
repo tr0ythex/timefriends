@@ -1,21 +1,31 @@
 class Api::V1::UsersController < ApplicationController
-  before_action :authenticate_with_token!, only: [:update, :destroy, :send_friendship_offer, :accept_friendship_offer, :friendship_offers, :friends]
+  before_action :authenticate_with_token!, 
+      only: [:update, :destroy, :send_friendship_offer, 
+             :accept_friendship_offer, :friendship_offers, :friends]
   
   def index
     @users = User.all
     @users = @users.limit(params[:limit]) if params[:limit]
     @users = @users.offset(params[:offset]) if params[:offset]
     
-    render json: @users
+    render json: @users, only: [:id, :login, :email, :hide_acc, :photo_url,
+      :first_name, :last_name, :auth_token]
   end
   
   def show
+    @user = User.find_by(id: params[:id])
+    if @user
+      render json: @user, only: [:id, :login, :email, :hide_acc, :photo_url,
+          :first_name, :last_name, :auth_token]
+    else
+      render json: { errors: "No such user" }, status: :unprocessable_entity
+    end
   end
     
   def create
     @user = User.create(user_params)
     if @user.save
-      head :created
+      render json: { auth_token: @user.auth_token }, status: :created
     else
       render json: { errors: @user.errors }, status: :unprocessable_entity
     end
