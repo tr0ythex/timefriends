@@ -7,7 +7,6 @@ Rails.application.routes.draw do
       resource :users, only: [:update, :create] do
         resources :posts, only: [:create]
       end
-      # post 'users/posts', to: 'posts#create'
       post 'login', to: 'sessions#create', as: 'login'
       delete 'logout', to: 'sessions#destroy', as: 'logout'
       get 'users(/:limit)(/:offset)', to: 'users#index'

@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20151217080929) do
+ActiveRecord::Schema.define(version: 20160116182856) do
 
   create_table "backgrounds", force: :cascade do |t|
     t.binary   "bg"
@@ -65,7 +65,7 @@ ActiveRecord::Schema.define(version: 20151217080929) do
     t.string   "email"
     t.string   "password_digest"
     t.boolean  "hide_acc",        default: false
-    t.binary   "photo"
+    t.string   "photo_url"
     t.string   "first_name"
     t.string   "last_name"
     t.datetime "created_at",                      null: false
