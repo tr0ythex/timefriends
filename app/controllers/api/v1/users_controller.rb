@@ -1,7 +1,9 @@
 class Api::V1::UsersController < ApplicationController
   before_action :authenticate_with_token!, 
       only: [:update, :destroy, :send_friendship_offer, 
-             :accept_friendship_offer, :friendship_offers, :friends]
+             :accept_friendship_offer, 
+             :decline_friendship_offer, 
+             :friendship_offers, :friends]
   
   def index
     @users = User.all
@@ -15,8 +17,7 @@ class Api::V1::UsersController < ApplicationController
   def show
     @user = User.find_by(id: params[:id])
     if @user
-      render json: @user, only: [:id, :login, :email, :hide_acc, :photo_url,
-          :first_name, :last_name, :auth_token]
+      render json: @user, only: user_json_params
     else
       render json: { errors: "No such user" }, status: :unprocessable_entity
     end
@@ -25,7 +26,7 @@ class Api::V1::UsersController < ApplicationController
   def create
     @user = User.create(user_params)
     if @user.save
-      render json: { auth_token: @user.auth_token }, status: :created
+      render json: @user, only: user_json_params, status: :created
     else
       render json: { errors: @user.errors }, status: :unprocessable_entity
     end
@@ -33,7 +34,6 @@ class Api::V1::UsersController < ApplicationController
   
   def update
     user = current_user
-
     if user.update(user_params)
       head :ok
     else
@@ -48,9 +48,9 @@ class Api::V1::UsersController < ApplicationController
   
   def send_friendship_offer
     if current_user.friend_request(User.find_by(login: params[:login]))
-      render json: { info: "Invitation sent" }, status: :ok
+      render json: { success: "Invitation sent" }, status: :ok
     else
-      render json: { errors: "Invitation has already been sent" }, status: :bad_request
+      render json: { errors: "Invitation has already been sent" }, status: :unprocessable_entity
     end
   end
   
@@ -58,7 +58,20 @@ class Api::V1::UsersController < ApplicationController
     if current_user.accept_request(User.find_by(login: params[:login]))
       render json: { info: "Invitation accepted" }
     else
-      render json: { errors: "Invitation has already been accepted" }, status: :bad_request
+      render json: { errors: "Invitation has already been accepted" }, status: :unprocessable_entity
+    end
+  end
+  
+  # двустороннее отклонение запроса в друзья
+  def decline_friendship_offer
+    d_user = User.find_by(login: params[:login])
+    if current_user.pending_friends.where(login: d_user.login).present? ||
+          current_user.requested_friends.where(login: d_user.login).present?
+      current_user.decline_request(d_user)
+      render json: { success: "Friendship request for user #{d_user.login} has been declined" }
+    else
+      render json: { errors: "There are no incoming or outcoming requests for #{d_user.login}" },
+          status: :unprocessable_entity
     end
   end
   
