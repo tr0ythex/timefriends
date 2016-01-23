@@ -10,14 +10,13 @@ class Api::V1::UsersController < ApplicationController
     @users = @users.limit(params[:limit]) if params[:limit]
     @users = @users.offset(params[:offset]) if params[:offset]
     
-    render json: @users, only: [:id, :login, :email, :hide_acc, :photo_url,
-      :first_name, :last_name, :auth_token]
+    render json: @users, only: user_json_params.tap(&:pop)
   end
   
   def show
     @user = User.find_by(id: params[:id])
     if @user
-      render json: @user, only: user_json_params
+      render json: @user, only: user_json_params.tap(&:pop)
     else
       render json: { errors: "No such user" }, status: :unprocessable_entity
     end
@@ -55,10 +54,15 @@ class Api::V1::UsersController < ApplicationController
   end
   
   def accept_friendship_offer
-    if current_user.accept_request(User.find_by(login: params[:login]))
-      render json: { info: "Invitation accepted" }
+    a_user = User.find_by(login: params[:login])
+    if current_user.requested_friends.where(login: a_user.login).present?
+      if current_user.accept_request(a_user)
+        render json: { success: "Invitation accepted" }
+      else # should never come into this block
+        render json: { errors: "Invitation has already been accepted" }, status: :unprocessable_entity
+      end
     else
-      render json: { errors: "Invitation has already been accepted" }, status: :unprocessable_entity
+      render json: { errors: "There's no incoming request from #{a_user.login}" }, status: :unprocessable_entity
     end
   end
   
@@ -76,11 +80,11 @@ class Api::V1::UsersController < ApplicationController
   end
   
   def friendship_offers
-    render json: current_user.requested_friends.to_a
+    render json: current_user.requested_friends.to_a, only: user_json_params.tap(&:pop)
   end
   
   def friends
-    render json: current_user.friends.to_a
+    render json: current_user.friends.to_a, only: user_json_params.tap(&:pop)
   end
     
   private
