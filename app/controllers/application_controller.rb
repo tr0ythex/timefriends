@@ -15,6 +15,6 @@ class ApplicationController < ActionController::Base
   end
   
   def user_json_params
-    [:id, :login, :email, :hide_acc, :photo_url, :first_name, :last_name, :auth_token]
+    [:username, :login, :email, :hide_acc, :photo_url, :first_name, :last_name, :vkid, :auth_token]
   end
 end
