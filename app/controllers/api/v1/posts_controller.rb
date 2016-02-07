@@ -1,5 +1,5 @@
 class Api::V1::PostsController < ApplicationController
-  before_action :authenticate_with_token!, only: [:create, :index]
+  before_action :authenticate_with_token!, only: [:create, :index, :update, :delete]
   
   def index
     @user = User.find(params)
@@ -19,9 +19,13 @@ class Api::V1::PostsController < ApplicationController
     end
   end
   
+  def update
+    
+  end
+  
   private
   
   def post_params
-    params.require(:post).permit(:body, :time, :place, :latitude, :longitude, :auto)
+    params.require(:post).permit(:body, :datetime, :place, :latitude, :longitude, :auto)
   end
 end

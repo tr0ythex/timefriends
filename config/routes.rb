@@ -5,7 +5,7 @@ Rails.application.routes.draw do
         get 'posts(/:date)', to: 'posts#index'
       end
       resource :users, only: [:update, :create] do
-        resources :posts, only: [:create]
+        resources :posts, only: [:create, :update, :delete]
       end
       post 'login', to: 'sessions#create', as: 'login'
       delete 'logout', to: 'sessions#destroy', as: 'logout'

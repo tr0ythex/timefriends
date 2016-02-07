@@ -11,13 +11,17 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20160206113132) do
+ActiveRecord::Schema.define(version: 20160207221457) do
 
-  create_table "backgrounds", force: :cascade do |t|
-    t.binary   "bg"
+  create_table "accessions", force: :cascade do |t|
+    t.integer  "user_id"
+    t.integer  "post_id"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
   end
+
+  add_index "accessions", ["post_id"], name: "index_accessions_on_post_id"
+  add_index "accessions", ["user_id"], name: "index_accessions_on_user_id"
 
   create_table "backgrounds_users", id: false, force: :cascade do |t|
     t.integer "user_id",       null: false
@@ -26,6 +30,12 @@ ActiveRecord::Schema.define(version: 20160206113132) do
 
   add_index "backgrounds_users", ["background_id"], name: "index_backgrounds_users_on_background_id"
   add_index "backgrounds_users", ["user_id"], name: "index_backgrounds_users_on_user_id"
+
+  create_table "bg_packs", force: :cascade do |t|
+    t.binary   "bg"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+  end
 
   create_table "comments", force: :cascade do |t|
     t.string   "author"
@@ -48,7 +58,7 @@ ActiveRecord::Schema.define(version: 20160206113132) do
 
   create_table "posts", force: :cascade do |t|
     t.text     "body"
-    t.datetime "time"
+    t.time     "datetime"
     t.string   "place"
     t.decimal  "latitude"
     t.decimal  "longitude"

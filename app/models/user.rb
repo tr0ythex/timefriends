@@ -5,8 +5,9 @@ class User < ActiveRecord::Base
   has_friendship # has_friendship gem
   
   has_many :posts
+  has_many :inviting_posts, through: :accessions
   
-  has_and_belongs_to_many :backgrounds
+  has_and_belongs_to_many :bg_packs
   
   # has_many :invites_by_posts, class_name: 'InvitedFriend', dependent: :destroy
   # has_many :posts, through: :invites_by_posts
