@@ -17,13 +17,22 @@ class Api::V1::PostsController < ApplicationController
   def feed
     posts = []
     posts += current_user.posts
+    # current_user.posts.each do |post|
+    #   posts << post.as_json(only: [:id, :body, :include => :user])
+    # end
     
     if params[:feed] == "all"
       current_user.friends.to_a.each do |friend|
         posts += friend.posts
       end
     end
-    render json: posts.sort_by(&:created_at)
+    
+    # posts.each do |post|
+    #   post.
+    # end
+    
+    render json: posts.to_json(:except => :user_id, :include => {:user => {only: [:id, :login, :photo_url]}})
+    # posts.sort_by(&:created_at)
   end
   
   def post_days
@@ -98,7 +107,7 @@ class Api::V1::PostsController < ApplicationController
   private
   
   def post_params
-    params.require(:post).permit(:body, :datetime, :place, :latitude, :longitude, 
+    params.require(:post).permit(:body, :start_time, :end_time, :place, :latitude, :longitude, 
       :auto, :joined_user_ids => [] )
   end
 end
