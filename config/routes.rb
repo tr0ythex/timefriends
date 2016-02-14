@@ -3,10 +3,17 @@ Rails.application.routes.draw do
     namespace :v1 do
       resources :users, only: [:create, :show] do
         get 'posts(/:date)', to: 'posts#index'
+        get 'post_days(/:year)(/:month)', to: 'posts#post_days'
+        # resources :posts, only: [:index]
       end
+      
       resource :users, only: [:update, :create] do
-        resources :posts, only: [:create, :update, :delete]
+        resources :posts, only: [:create, :update, :destroy]
+        get 'posts(/:feed)', to: 'posts#feed'
+        get 'post_days(/:year)(/:month)', to: 'posts#post_days'
+        get 'bg_packs(/:name)(/:device_type)', to: 'bg_packs#index'
       end
+      
       post 'login', to: 'sessions#create', as: 'login'
       delete 'logout', to: 'sessions#destroy', as: 'logout'
       get 'users(/:limit)(/:offset)', to: 'users#index'
@@ -17,6 +24,9 @@ Rails.application.routes.draw do
       
       get 'friendship_offers', to: 'users#friendship_offers'
       get 'friends', to: 'users#friends'
+      
+      post 'posts/join', to: 'posts#join'
+      post 'posts/leave', to: 'posts#leave'
     end
   end
 end

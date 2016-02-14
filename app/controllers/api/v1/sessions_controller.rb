@@ -4,7 +4,8 @@ class Api::V1::SessionsController < ApplicationController
   def create
     user = User.find_by(login: session_params[:login])
     if user && user.authenticate(session_params[:password])
-      render json: user, only: user_json_params, status: :ok
+      render json: user.as_json(only: user_json_params)
+        .merge(friends_count: user.friends.count), status: :ok
     else
       render json: { errors: "Invalid login or password" }, status: :unprocessable_entity
     end

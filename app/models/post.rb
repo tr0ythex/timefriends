@@ -1,12 +1,10 @@
 class Post < ActiveRecord::Base
-  # has_many :users
-  # has_many :accessions
-  has_many :invited_friends, through: :accessions, source: :users
-  # has_many :users, through: :invited_friends
-  
   belongs_to :user
+  has_many :joined_users, through: :accessions, class_name: 'User'
+  has_many :accessions
+  
   has_many :comments
   
-  validates :body, :datetime, :place, presence: true
+  validates :body, :start_time, :end_time, :place, presence: true
   validates :auto, inclusion: [true, false]
 end

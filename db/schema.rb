@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20160207231916) do
+ActiveRecord::Schema.define(version: 20160214133904) do
 
   create_table "accessions", force: :cascade do |t|
     t.integer  "user_id"
@@ -68,7 +68,7 @@ ActiveRecord::Schema.define(version: 20160207231916) do
 
   create_table "posts", force: :cascade do |t|
     t.text     "body"
-    t.time     "datetime"
+    t.datetime "start_time"
     t.string   "place"
     t.decimal  "latitude"
     t.decimal  "longitude"
@@ -76,6 +76,7 @@ ActiveRecord::Schema.define(version: 20160207231916) do
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.integer  "user_id"
+    t.datetime "end_time"
   end
 
   add_index "posts", ["user_id"], name: "index_posts_on_user_id"
@@ -84,14 +85,18 @@ ActiveRecord::Schema.define(version: 20160207231916) do
     t.string   "login"
     t.string   "email"
     t.string   "password_digest"
-    t.boolean  "hide_acc",        default: false
+    t.boolean  "hide_acc",           default: false
     t.string   "photo_url"
     t.string   "first_name"
     t.string   "last_name"
-    t.datetime "created_at",                      null: false
-    t.datetime "updated_at",                      null: false
+    t.datetime "created_at",                         null: false
+    t.datetime "updated_at",                         null: false
     t.string   "auth_token"
     t.string   "vkid"
+    t.string   "photo_file_name"
+    t.string   "photo_content_type"
+    t.integer  "photo_file_size"
+    t.datetime "photo_updated_at"
   end
 
 end

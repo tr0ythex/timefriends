@@ -3,22 +3,18 @@ class User < ActiveRecord::Base
   
   has_secure_password # presence of password
   has_friendship # has_friendship gem
+  has_attached_file :photo, styles: { small: "64x64", med: "100x100", large: "200x200" }
   
   has_many :posts
-  has_many :inviting_posts, through: :accessions
+  has_many :joining_posts, through: :accessions, class_name: 'Post'
+  has_many :accessions
   
   has_and_belongs_to_many :bg_packs
   
-  # has_many :invites_by_posts, class_name: 'InvitedFriend', dependent: :destroy
-  # has_many :posts, through: :invites_by_posts
-  
   validates :auth_token, uniqueness: true
   validates :login, :email, presence: true, uniqueness: true
-  # validates :email, presence: true, uniqueness: true
   validates :hide_acc, inclusion: [true, false]
-  # validates :first_name, presence: true
-  # validates :last_name, presence: true
-  
+
   def generate_auth_token!
     # return if auth_token.present?
     loop do

@@ -6,28 +6,36 @@ class Api::V1::UsersController < ApplicationController
              :friendship_offers, :friends]
   
   def index
-    @users = User.all
-    @users = @users.limit(params[:limit]) if params[:limit]
-    @users = @users.offset(params[:offset]) if params[:offset]
-    
-    render json: @users, only: user_json_params.tap(&:pop)
+    users = User.all
+    users = users.limit(params[:limit]) if params[:limit]
+    users = users.offset(params[:offset]) if params[:offset]
+
+    users_output = []
+    users.each do |user|
+      users_output << user.as_json(only: user_json_params.tap(&:pop))
+        .merge(friends_count: user.friends.count)
+    end
+    render json: users_output
   end
   
   def show
-    @user = User.find_by(id: params[:id])
-    if @user
-      render json: @user, only: user_json_params.tap(&:pop)
+    user = User.find_by(id: params[:id])
+    if user
+      render json: user.as_json(only: user_json_params.tap(&:pop))
+        .merge(friends_count: user.friends.count)
+      # only: user_json_params.tap(&:pop)
     else
       render json: { errors: "No such user" }, status: :unprocessable_entity
     end
   end
     
   def create
-    @user = User.create(user_params)
-    if @user.save
-      render json: @user, only: user_json_params, status: :created
+    user = User.create(user_params)
+    if user.save
+      render json: user.as_json(only: user_json_params)
+        .merge(friends_count: user.friends.count), status: :created
     else
-      render json: { errors: @user.errors }, status: :unprocessable_entity
+      render json: { errors: user.errors }, status: :unprocessable_entity
     end
   end
   
