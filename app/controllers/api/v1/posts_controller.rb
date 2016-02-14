@@ -7,7 +7,8 @@ class Api::V1::PostsController < ApplicationController
       if params[:date]
         render json: user.posts.includes(:comments).where("strftime('%Y-%m-%d', created_at) = ?", params[:date])
       else
-        render json: user.posts.includes(:comments)
+        render json: user.posts.to_json(:except => :user_id, 
+            :include => {:user => {only: [:id, :login, :photo_url]}})
       end
     else
       render json: { errors: "No such user" }, status: :unprocessable_entity
@@ -17,9 +18,6 @@ class Api::V1::PostsController < ApplicationController
   def feed
     posts = []
     posts += current_user.posts
-    # current_user.posts.each do |post|
-    #   posts << post.as_json(only: [:id, :body, :include => :user])
-    # end
     
     if params[:feed] == "all"
       current_user.friends.to_a.each do |friend|
@@ -27,12 +25,8 @@ class Api::V1::PostsController < ApplicationController
       end
     end
     
-    # posts.each do |post|
-    #   post.
-    # end
-    
-    render json: posts.to_json(:except => :user_id, :include => {:user => {only: [:id, :login, :photo_url]}})
-    # posts.sort_by(&:created_at)
+    render json: posts.to_json(:except => :user_id, 
+        :include => {:user => {only: [:id, :login, :photo_url]}})
   end
   
   def post_days
