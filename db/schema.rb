@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20160214133904) do
+ActiveRecord::Schema.define(version: 20160215154042) do
 
   create_table "accessions", force: :cascade do |t|
     t.integer  "user_id"
@@ -85,18 +85,15 @@ ActiveRecord::Schema.define(version: 20160214133904) do
     t.string   "login"
     t.string   "email"
     t.string   "password_digest"
-    t.boolean  "hide_acc",           default: false
+    t.boolean  "hide_acc",        default: false
     t.string   "photo_url"
     t.string   "first_name"
     t.string   "last_name"
-    t.datetime "created_at",                         null: false
-    t.datetime "updated_at",                         null: false
+    t.datetime "created_at",                      null: false
+    t.datetime "updated_at",                      null: false
     t.string   "auth_token"
     t.string   "vkid"
-    t.string   "photo_file_name"
-    t.string   "photo_content_type"
-    t.integer  "photo_file_size"
-    t.datetime "photo_updated_at"
+    t.string   "background_url"
   end
 
 end

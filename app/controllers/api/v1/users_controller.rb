@@ -30,13 +30,37 @@ class Api::V1::UsersController < ApplicationController
   end
     
   def create
-    user = User.create(user_params)
+    image = Paperclip.io_adapters.for(params[:user][:photo_data]) 
+    image.original_filename = "something.png"
+    
+    user = User.create(login: params[:user][:login], password: params[:user][:password], email: params[:user][:email], photo: image)
+    # StringIO.open(params[:user][:photo_data]) do |s|
+    #   user.photo = s
+    #   user.photo_file_name = "something.png"
+    #   user.photo_content_type = 'image/png'
+    # end
+    
+    # , photo: image)
+    # tempfile = params[:file].tempfile.path
     if user.save
-      render json: user.as_json(only: user_json_params)
-        .merge(friends_count: user.friends.count), status: :created
+      render json: user, status: :created
     else
       render json: { errors: user.errors }, status: :unprocessable_entity
     end
+    
+    # tempfile = image.tempfile.path
+    # if File::exists?(tempfile)
+    #   File::delete(tempfile)
+    # end
+    # render json: tempfile
+    
+    # user = User.create(user_params)
+    # if user.save
+    #   render json: user.as_json(only: user_json_params)
+    #     .merge(friends_count: user.friends.count), status: :created
+    # else
+    #   render json: { errors: user.errors }, status: :unprocessable_entity
+    # end
   end
   
   def update
@@ -97,6 +121,6 @@ class Api::V1::UsersController < ApplicationController
     
   private
     def user_params
-      params.require(:user).permit(:login, :email, :password, :hide_acc, :photo, :first_name, :last_name, :vkid)
+      params.require(:user).permit(:login, :email, :password, :hide_acc, :photo_data, :first_name, :last_name, :vkid)
     end
 end

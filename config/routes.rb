@@ -9,7 +9,7 @@ Rails.application.routes.draw do
       
       resource :users, only: [:update, :create] do
         resources :posts, only: [:create, :update, :destroy]
-        get 'posts(/:feed)', to: 'posts#feed'
+        get 'posts(/:feed)(/:date)', to: 'posts#feed'
         get 'post_days(/:year)(/:month)', to: 'posts#post_days'
         get 'bg_packs(/:name)(/:device_type)', to: 'bg_packs#index'
       end

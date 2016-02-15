@@ -5,10 +5,22 @@ class Api::V1::PostsController < ApplicationController
     user = User.find_by(id: params[:user_id])
     if user
       if params[:date]
-        render json: user.posts.includes(:comments).where("strftime('%Y-%m-%d', created_at) = ?", params[:date])
+        render json: user.posts
+          .where("strftime('%Y-%m-%d', created_at) = ?", params[:date])
+          .to_json(
+            :except => :user_id, 
+            :include => [
+               {:user => { only: [:id, :login, :photo_url] }}, 
+               :joined_users => { only: :id }
+            ]
+          )
       else
-        render json: user.posts.to_json(:except => :user_id, 
-            :include => {:user => {only: [:id, :login, :photo_url]}})
+        render json: user.posts.to_json(
+          :except => :user_id, 
+          :include => [
+             {:user => { only: [:id, :login, :photo_url] }}, 
+             :joined_users => { only: :id }
+          ])
       end
     else
       render json: { errors: "No such user" }, status: :unprocessable_entity
@@ -17,16 +29,31 @@ class Api::V1::PostsController < ApplicationController
   
   def feed
     posts = []
-    posts += current_user.posts
     
-    if params[:feed] == "all"
-      current_user.friends.to_a.each do |friend|
-        posts += friend.posts
+    if params[:date]
+      posts += current_user.posts.where("strftime('%Y-%m-%d', created_at) = ?", params[:date])
+      if params[:feed] == "all"
+        current_user.friends.to_a.each do |friend|
+          posts += friend.posts.where("strftime('%Y-%m-%d', created_at) = ?", params[:date])
+        end
+      end
+    else
+      posts += current_user.posts
+      if params[:feed] == "all"
+        current_user.friends.to_a.each do |friend|
+          posts += friend.posts
+        end
       end
     end
     
-    render json: posts.to_json(:except => :user_id, 
-        :include => {:user => {only: [:id, :login, :photo_url]}})
+    render json: posts.to_json(
+      :except => :user_id, 
+      :include => [
+        {:user => { only: [:id, :login, :photo_url] }}, 
+        :joined_users => { only: :id }
+      ]
+    )
+
   end
   
   def post_days
