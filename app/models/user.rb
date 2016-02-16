@@ -3,10 +3,10 @@ class User < ActiveRecord::Base
   
   has_secure_password # presence of password
   has_friendship # has_friendship gem
-  # has_attached_file :photo, styles: { small: "64x64", med: "100x100", large: "200x200" }
+  has_attached_file :photo, styles: { small: "64x64", med: "100x100", large: "200x200" }
   
-  # validates_attachment :photo, content_type: { content_type: ["image/jpg", "image/jpeg", "image/png", "image/gif"] }
-  # validates_attachment_file_name :photo, :matches => [/png\Z/, /jpe?g\Z/, /gif\Z/]
+  validates_attachment :photo, content_type: { content_type: ["image/jpg", "image/jpeg", "image/png", "image/gif"] }
+  validates_attachment_file_name :photo, :matches => [/png\Z/, /jpe?g\Z/, /gif\Z/]
   
   # attr_accessor :photo_data
   # before_save :decode_photo_data
@@ -20,6 +20,8 @@ class User < ActiveRecord::Base
   validates :auth_token, uniqueness: true
   validates :login, :email, presence: true, uniqueness: true
   validates :hide_acc, inclusion: [true, false]
+  # attr_accessor :photo
+  # mount_uploader :photo_url, AttachmentUploader
 
   def generate_auth_token!
     # return if auth_token.present?

@@ -30,10 +30,17 @@ class Api::V1::UsersController < ApplicationController
   end
     
   def create
-    image = Paperclip.io_adapters.for(params[:user][:photo_data]) 
-    image.original_filename = "something.png"
+    # image = Paperclip.io_adapters.for(params[:user][:photo_data]) 
+    # image.original_filename = "something.png"
+    image = parse_image_data(params[:user][:photo_data])
     
     user = User.create(login: params[:user][:login], password: params[:user][:password], email: params[:user][:email], photo: image)
+    if user.save
+      render json: user, status: :created
+    else
+      render json: { errors: user.errors }, status: :unprocessable_entity
+    end
+
     # StringIO.open(params[:user][:photo_data]) do |s|
     #   user.photo = s
     #   user.photo_file_name = "something.png"
@@ -42,11 +49,6 @@ class Api::V1::UsersController < ApplicationController
     
     # , photo: image)
     # tempfile = params[:file].tempfile.path
-    if user.save
-      render json: user, status: :created
-    else
-      render json: { errors: user.errors }, status: :unprocessable_entity
-    end
     
     # tempfile = image.tempfile.path
     # if File::exists?(tempfile)
@@ -54,14 +56,87 @@ class Api::V1::UsersController < ApplicationController
     # end
     # render json: tempfile
     
-    # user = User.create(user_params)
+    # user = User.create(convert_data_uri_to_upload(user_params))
     # if user.save
     #   render json: user.as_json(only: user_json_params)
     #     .merge(friends_count: user.friends.count), status: :created
     # else
     #   render json: { errors: user.errors }, status: :unprocessable_entity
     # end
+  ensure
+    clean_tempfile
   end
+  
+  def parse_image_data(image_data)
+    # @tempfile = Tempfile.new('item_image')
+    # @tempfile.binmode
+    # @tempfile.write Base64.decode64(image_data)
+    # @tempfile.rewind
+
+    # uploaded_file = ActionDispatch::Http::UploadedFile.new(
+    #   tempfile: @tempfile,
+    #   filename: 'sdfs'
+    # )
+    # @tempfile.unlink
+    # uploaded_file.content_type = image_data[:content_type]
+    # uploaded_file
+    
+    image_data = split_base64(image_data)
+	  image_data_string = image_data[:data]
+	  image_data_binary = Base64.decode64(image_data_string)
+
+	    temp_img_file = Tempfile.new("")
+	    temp_img_file.binmode
+	    temp_img_file << image_data_binary
+	    temp_img_file.rewind
+
+	    img_params = {:filename => "image.#{image_data[:extension]}", :type => image_data[:type], :tempfile => temp_img_file}
+	    uploaded_file = ActionDispatch::Http::UploadedFile.new(img_params)
+
+	    temp_img_file.unlink
+      uploaded_file
+  end
+
+  def clean_tempfile
+    if @tempfile
+      @tempfile.close
+      @tempfile.unlink
+    end
+  end
+  
+  def split_base64(uri_str)
+	  if uri_str.match(%r{^data:(.*?);(.*?),(.*)$})
+	    uri = Hash.new
+	    uri[:type] = $1 # "image/gif"
+	    uri[:encoder] = $2 # "base64"
+	    uri[:data] = $3 # data string
+	    uri[:extension] = $1.split('/')[1] # "gif"
+	    return uri
+	  else
+	    return nil
+	  end
+  end
+  
+  # def convert_data_uri_to_upload(obj_hash)
+	 # if obj_hash[:photo_url].try(:match, %r{^data:(.*?);(.*?),(.*)$})
+	 #   image_data = split_base64(obj_hash[:photo_url])
+	 #   image_data_string = image_data[:data]
+	 #   image_data_binary = Base64.decode64(image_data_string)
+
+	 #   temp_img_file = Tempfile.new("")
+	 #   temp_img_file.binmode
+	 #   temp_img_file << image_data_binary
+	 #   temp_img_file.rewind
+
+	 #   img_params = {:filename => "image.#{image_data[:extension]}", :type => image_data[:type], :tempfile => temp_img_file}
+	 #   uploaded_file = ActionDispatch::Http::UploadedFile.new(img_params)
+
+	 #   obj_hash[:photo] = uploaded_file
+	 #   obj_hash.delete(:photo_url)
+	 #   temp_img_file.unlink
+	 # end
+  # 	return obj_hash    
+  # end
   
   def update
     user = current_user
@@ -121,6 +196,6 @@ class Api::V1::UsersController < ApplicationController
     
   private
     def user_params
-      params.require(:user).permit(:login, :email, :password, :hide_acc, :photo_data, :first_name, :last_name, :vkid)
+      params.require(:user).permit(:login, :email, :password, :hide_acc, :photo_url, :first_name, :last_name, :vkid)
     end
 end
