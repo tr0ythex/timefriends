@@ -36,7 +36,9 @@ class Api::V1::UsersController < ApplicationController
     user.password = params[:user][:password]
     user.photo = decode_picture_data(params[:user][:photo_data])
     
+    
     if user.save
+      user.update(photo_url: user.photo.url(:original))
       render json: user.as_json(only: user_json_params)
         .merge(friends_count: user.friends.count), status: :created
     else

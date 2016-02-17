@@ -5,8 +5,9 @@ class User < ActiveRecord::Base
   has_friendship # has_friendship gem
   
   has_attached_file :photo, 
-    :url => "/public/original/:style/:basename.:extension",
-    :path => ":rails_root/public/original/:style/:basename.:extension"
+    :url => "/users/:id/:basename.:extension",
+    :path => ":rails_root/public/users/:id/:basename.:extension",
+    :default_url => "/users/nothing.png"
   # styles: { small: "64x64", med: "100x100", large: "200x200" }
   validates_attachment :photo, content_type: { content_type: ["image/jpg", "image/jpeg", "image/png", "image/gif"] }
   validates_attachment_file_name :photo, :matches => [/png\Z/, /jpe?g\Z/, /gif\Z/]
