@@ -12,7 +12,7 @@ class User < ActiveRecord::Base
   validates_attachment :photo, content_type: { content_type: ["image/jpg", "image/jpeg", "image/png", "image/gif"] }
   validates_attachment_file_name :photo, :matches => [/png\Z/, /jpe?g\Z/, /gif\Z/]
 
-  has_many :posts
+  has_many :posts, dependent: :destroy
   has_many :joining_posts, through: :accessions, class_name: 'Post'
   has_many :accessions
   
