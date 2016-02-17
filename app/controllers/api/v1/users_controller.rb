@@ -34,11 +34,11 @@ class Api::V1::UsersController < ApplicationController
     user.login = params[:user][:login]
     user.email = params[:user][:email]
     user.password = params[:user][:password]
-    user.photo = decode_picture_data(params[:user][:photo_data])
+    # user.photo = decode_picture_data(params[:user][:photo_data])
     
     
     if user.save
-      user.update(photo_url: user.photo.url(:original))
+      # user.update(photo_url: user.photo.url(:original))
       render json: user.as_json(only: user_json_params)
         .merge(friends_count: user.friends.count), status: :created
     else
@@ -62,8 +62,19 @@ class Api::V1::UsersController < ApplicationController
   
   def update
     user = current_user
-    if user.update(user_params)
-      head :ok
+    
+    if params[:user][:photo_data]
+      photo = decode_picture_data(params[:user][:photo_data])
+      if user.update(photo: photo)
+        user.update(photo_url: user.photo.url)
+        render json: user.as_json(only: user_json_params)
+          .merge(friends_count: user.friends.count), status: :ok
+      else
+        render json: user.errors, status: :unprocessable_entity
+      end
+    elsif user.update(user_params)
+      render json: user.as_json(only: user_json_params)
+        .merge(friends_count: user.friends.count), status: :ok
     else
       render json: user.errors, status: :unprocessable_entity
     end
@@ -118,6 +129,6 @@ class Api::V1::UsersController < ApplicationController
     
   private
     def user_params
-      params.require(:user).permit(:login, :email, :password, :hide_acc, :photo, :first_name, :last_name, :vkid)
+      params.require(:user).permit(:login, :email, :password, :hide_acc, :photo_url, :first_name, :last_name, :vkid)
     end
 end
