@@ -3,8 +3,11 @@ class User < ActiveRecord::Base
   
   has_secure_password # presence of password
   has_friendship # has_friendship gem
-  has_attached_file :photo, styles: { small: "64x64", med: "100x100", large: "200x200" }
   
+  has_attached_file :photo, 
+    :url => "/public/original/:style/:basename.:extension",
+    :path => ":rails_root/public/original/:style/:basename.:extension"
+  # styles: { small: "64x64", med: "100x100", large: "200x200" }
   validates_attachment :photo, content_type: { content_type: ["image/jpg", "image/jpeg", "image/png", "image/gif"] }
   validates_attachment_file_name :photo, :matches => [/png\Z/, /jpe?g\Z/, /gif\Z/]
 

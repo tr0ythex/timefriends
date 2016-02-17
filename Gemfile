@@ -28,8 +28,8 @@ gem 'bcrypt', '~> 3.1.7'
 gem 'has_friendship'
 
 gem 'paperclip'
-gem 'carrierwave'
-gem 'carrierwave-base64'
+# gem 'carrierwave'
+# gem 'carrierwave-base64'
 
 # Use Unicorn as the app server
 # gem 'unicorn'

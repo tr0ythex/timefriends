@@ -29,13 +29,33 @@ class Api::V1::UsersController < ApplicationController
   end
     
   def create
-    user = User.create(user_params)
+    
+    user = User.new
+    user.login = params[:user][:login]
+    user.email = params[:user][:email]
+    user.password = params[:user][:password]
+    user.photo = decode_picture_data(params[:user][:photo_data])
+    
     if user.save
       render json: user.as_json(only: user_json_params)
         .merge(friends_count: user.friends.count), status: :created
     else
       render json: { errors: user.errors }, status: :unprocessable_entity
     end
+    # user = User.create(user_params)
+    # if user.save
+    #   render json: user.as_json(only: user_json_params)
+    #     .merge(friends_count: user.friends.count), status: :created
+    # else
+    #   render json: { errors: user.errors }, status: :unprocessable_entity
+    # end
+  end
+  
+  def decode_picture_data picture_data
+    data = Paperclip.io_adapters.for(picture_data) 
+    data.original_filename = "upload.png"
+    data.content_type = "image/png"
+    data
   end
   
   def update
@@ -96,6 +116,6 @@ class Api::V1::UsersController < ApplicationController
     
   private
     def user_params
-      params.require(:user).permit(:login, :email, :password, :hide_acc, :photo_url, :first_name, :last_name, :vkid)
+      params.require(:user).permit(:login, :email, :password, :hide_acc, :photo, :first_name, :last_name, :vkid)
     end
 end
