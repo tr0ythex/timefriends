@@ -24,6 +24,7 @@ Rails.application.routes.draw do
       
       get 'friendship_offers', to: 'users#friendship_offers'
       get 'friends', to: 'users#friends'
+      get 'friends_with/:login', to: 'users#friends_with'
       
       post 'posts/join', to: 'posts#join'
       post 'posts/leave', to: 'posts#leave'
