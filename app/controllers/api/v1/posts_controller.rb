@@ -28,22 +28,23 @@ class Api::V1::PostsController < ApplicationController
   end
   
   def feed
-    posts = []
-    
-    if params[:date]
-      posts += current_user.posts.where("strftime('%Y-%m-%d', created_at) = ?", params[:date])
-      if params[:feed] == "all"
-        current_user.friends.to_a.each do |friend|
-          posts += friend.posts.where("strftime('%Y-%m-%d', created_at) = ?", params[:date])
-        end
+    my_posts = []
+    friends_posts = []
+    created_at_date = "strftime('%Y-%m-%d', created_at) = ?"
+
+    case params[:feed]
+    when "my"
+      my_posts += current_user.posts
+      my_posts = my_posts.where(created_at_date, params[:date]) if params[:date]
+    when "friends"
+      current_user.friends.to_a.each do |friend|
+        friends_posts += friend.posts
       end
+      friends_posts = friends_posts.where(created_at_date, params[:date]) if params[:date]
+    when "all"
+      my_posts + friends_posts
     else
-      posts += current_user.posts
-      if params[:feed] == "all"
-        current_user.friends.to_a.each do |friend|
-          posts += friend.posts
-        end
-      end
+      posts
     end
     
     render json: posts.to_json(
