@@ -4,7 +4,7 @@ class Api::V1::UsersController < ApplicationController
              :accept_friendship_offer, 
              :decline_friendship_offer, 
              :requested_friends, :pending_friends, 
-             :friends, :friends_with]
+             :friends, :friends_with, :remove_friend]
   
   def index
     users = User.all
@@ -30,28 +30,17 @@ class Api::V1::UsersController < ApplicationController
   end
     
   def create
-    
     user = User.new
     user.login = params[:user][:login]
     user.email = params[:user][:email]
     user.password = params[:user][:password]
-    # user.photo = decode_picture_data(params[:user][:photo_data])
-    
     
     if user.save
-      # user.update(photo_url: user.photo.url(:original))
       render json: user.as_json(only: user_json_params)
         .merge(friends_count: user.friends.count), status: :created
     else
       render json: { errors: user.errors }, status: :unprocessable_entity
     end
-    # user = User.create(user_params)
-    # if user.save
-    #   render json: user.as_json(only: user_json_params)
-    #     .merge(friends_count: user.friends.count), status: :created
-    # else
-    #   render json: { errors: user.errors }, status: :unprocessable_entity
-    # end
   end
   
   def decode_picture_data picture_data
@@ -120,6 +109,20 @@ class Api::V1::UsersController < ApplicationController
     end
   end
   
+  def remove_friend
+    r_friend = User.find_by(login: params[:login])
+    if r_friend
+      if r_friend == current_user
+        render json: { errors: "You cant' be your friend" }
+      else
+        current_user.remove_friend(r_friend)
+        render json: { success: "You successfully removed #{r_friend.login} from your friends" }
+      end
+    else
+      render json: { errors: "There's no such user" }
+    end
+  end
+  
   def requested_friends
     render json: current_user.requested_friends.to_a, only: user_json_params.tap(&:pop)
   end
@@ -151,6 +154,6 @@ class Api::V1::UsersController < ApplicationController
     
   private
     def user_params
-      params.require(:user).permit(:login, :email, :password, :hide_acc, :photo_url, :first_name, :last_name, :vkid)
+      params.require(:user).permit(:login, :email, :password, :hide_acc, :photo_url, :first_name, :last_name, :vkid, :background_url)
     end
 end

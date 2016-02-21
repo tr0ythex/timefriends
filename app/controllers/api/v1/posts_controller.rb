@@ -33,11 +33,11 @@ class Api::V1::PostsController < ApplicationController
     
     case params[:feed]
     when "my"
-      posts = my_posts
+      posts = my_posts(params[:date])
     when "friends"
-      posts = friends_posts
+      posts = friends_posts(params[:date])
     when "all"
-      posts = my_posts + friends_posts
+      posts = my_posts(params[:date]) + friends_posts(params[:date])
     else
       wrong_arg = true
     end
@@ -51,25 +51,33 @@ class Api::V1::PostsController < ApplicationController
         ]
       )
     else
-      render json: { errors: "Wrong argument after posts" }
+      render json: { errors: "Wrong argument after posts" }, status: :unprocessable_entity
     end
     
 
   end
   
-  def my_posts
+  def my_posts(date)
     my_posts = []
-    my_posts = current_user.posts
-    my_posts = my_posts.where(created_at_date, params[:date]) if params[:date]
+    if !date
+      my_posts = current_user.posts
+    else
+      my_posts = current_user.posts.where(created_at_date, date)
+    end
     my_posts
   end
   
-  def friends_posts
+  def friends_posts(date)
     friends_posts = []
-    current_user.friends.to_a.each do |friend|
-      friends_posts += friend.posts
+    if !date
+      current_user.friends.to_a.each do |friend|
+        friends_posts += friend.posts
+      end
+    else
+      current_user.friends.to_a.each do |friend|
+        friends_posts += friend.posts.where(created_at_date, date)
+      end
     end
-    friends_posts = friends_posts.where(created_at_date, params[:date]) if params[:date]
     friends_posts
   end
   
