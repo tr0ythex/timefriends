@@ -3,7 +3,8 @@ class Api::V1::UsersController < ApplicationController
       only: [:update, :destroy, :send_friendship_offer, 
              :accept_friendship_offer, 
              :decline_friendship_offer, 
-             :friendship_offers, :friends, :friends_with]
+             :requested_friends, :pending_friends, 
+             :friends, :friends_with]
   
   def index
     users = User.all
