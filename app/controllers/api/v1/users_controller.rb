@@ -3,7 +3,7 @@ class Api::V1::UsersController < ApplicationController
       only: [:update, :destroy, :send_friendship_offer, 
              :accept_friendship_offer, 
              :decline_friendship_offer, 
-             :friendship_offers, :friends]
+             :friendship_offers, :friends, :friends_with]
   
   def index
     users = User.all
@@ -125,6 +125,23 @@ class Api::V1::UsersController < ApplicationController
   
   def friends
     render json: current_user.friends.to_a, only: user_json_params.tap(&:pop)
+  end
+  
+  def friends_with
+    user = User.find_by(login: params[:login])
+    if user
+      if current_user == user
+        render json: { errors: "You can't be your friend" }, status: :unprocessable_entity
+      else
+        if current_user.friends_with?(user)
+          render json: { success: "#{user.login} is your friend" }
+        else
+          render json: { success: "#{user.login} isn't your friend" }
+        end
+      end
+    else
+      render json: { errors: "User '#{params[:login]}' doesn't exist" }, status: :unprocessable_entity
+    end
   end
     
   private

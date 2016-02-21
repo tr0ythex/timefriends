@@ -1,4 +1,4 @@
-class RemoveDatetimeAndAddStarttimeToPosts < ActiveRecord::Migration
+class RenameDatetimeAndAddEndTimeToPosts < ActiveRecord::Migration
   def change
     rename_column :posts, :datetime, :start_time
     change_column :posts, :start_time, :datetime
