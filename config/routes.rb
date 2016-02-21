@@ -22,7 +22,8 @@ Rails.application.routes.draw do
       post 'decline_friendship_offer', to: 'users#decline_friendship_offer'
       post 'accept_friendship_offer', to: 'users#accept_friendship_offer'
       
-      get 'friendship_offers', to: 'users#friendship_offers'
+      get 'requested_friends', to: 'users#requested_friends'
+      get 'pending_friends', to: 'users#pending_friends'
       get 'friends', to: 'users#friends'
       get 'friends_with/:login', to: 'users#friends_with'
       

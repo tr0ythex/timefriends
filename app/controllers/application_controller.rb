@@ -18,4 +18,8 @@ class ApplicationController < ActionController::Base
     [:id, :username, :login, :email, :hide_acc, :photo_url, 
      :first_name, :last_name, :vkid, :background_url, :auth_token]
   end
+  
+  def created_at_date
+    "strftime('%Y-%m-%d', created_at) = ?"
+  end
 end

@@ -119,8 +119,12 @@ class Api::V1::UsersController < ApplicationController
     end
   end
   
-  def friendship_offers
+  def requested_friends
     render json: current_user.requested_friends.to_a, only: user_json_params.tap(&:pop)
+  end
+  
+  def pending_friends
+    render json: current_user.pending_friends.to_a, only: user_json_params.tap(&:pop)
   end
   
   def friends
