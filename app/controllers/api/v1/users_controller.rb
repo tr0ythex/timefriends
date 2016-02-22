@@ -113,13 +113,18 @@ class Api::V1::UsersController < ApplicationController
     r_friend = User.find_by(login: params[:login])
     if r_friend
       if r_friend == current_user
-        render json: { errors: "You cant' be your friend" }
+        render json: { errors: "You cant' be your friend" }, status: :unprocessable_entity
       else
-        current_user.remove_friend(r_friend)
-        render json: { success: "You successfully removed #{r_friend.login} from your friends" }
+        if current_user.friends_with?(r_friend)
+          current_user.remove_friend(r_friend)
+          render json: { success: "You successfully removed #{r_friend.login} from your friends" }
+        else
+          render json: { errors: "#{r_friend.login} is not your friend" },
+              status: :unprocessable_entity
+        end
       end
     else
-      render json: { errors: "There's no such user" }
+      render json: { errors: "There's no such user" }, status: :unprocessable_entity
     end
   end
   
