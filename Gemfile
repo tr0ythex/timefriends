@@ -29,6 +29,8 @@ gem 'has_friendship'
 
 gem 'paperclip'
 
+gem 'houston'
+
 # Use Unicorn as the app server
 # gem 'unicorn'
 

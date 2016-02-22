@@ -68,6 +68,8 @@ GEM
       coffee-script-source
       execjs
     coffee-script-source (1.10.0)
+    commander (4.4.0)
+      highline (~> 1.7.2)
     concurrent-ruby (1.0.0)
     debug_inspector (0.0.2)
     erubis (2.7.0)
@@ -77,6 +79,10 @@ GEM
       activesupport (>= 4.1.0)
     has_friendship (0.1.0)
       rails (~> 4.0)
+    highline (1.7.8)
+    houston (2.2.3)
+      commander (~> 4.1)
+      json
     i18n (0.7.0)
     jbuilder (2.4.1)
       activesupport (>= 3.0.0, < 5.1)
@@ -189,6 +195,7 @@ DEPENDENCIES
   coffee-rails (~> 4.1.0)
   ffaker
   has_friendship
+  houston
   jbuilder (~> 2.0)
   jquery-rails
   paperclip
