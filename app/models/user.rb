@@ -18,6 +18,8 @@ class User < ActiveRecord::Base
   
   has_and_belongs_to_many :bg_packs
   
+  has_many :devices, dependent: :destroy
+  
   validates :auth_token, uniqueness: true
   validates :login, :email, presence: true, uniqueness: true
   validates :hide_acc, inclusion: [true, false]

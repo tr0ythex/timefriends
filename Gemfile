@@ -31,6 +31,8 @@ gem 'paperclip'
 
 gem 'houston'
 
+gem 'apns'
+
 # Use Unicorn as the app server
 # gem 'unicorn'
 

@@ -44,7 +44,7 @@ class Api::V1::UsersController < ApplicationController
   end
   
   def decode_picture_data picture_data
-    data = Paperclip.io_adapters.for(picture_data) 
+    data = Paperclip.io_adapters.for(picture_data)
     data.original_filename = "upload.png"
     data.content_type = "image/png"
     data
