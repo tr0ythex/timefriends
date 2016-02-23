@@ -30,10 +30,10 @@ class Api::V1::UsersController < ApplicationController
   end
     
   def create
-    user = User.new
-    user.login = params[:user][:login]
-    user.email = params[:user][:email]
-    user.password = params[:user][:password]
+    user = User.new(user_params)
+    # user.login = params[:user][:login]
+    # user.email = params[:user][:email]
+    # user.password = params[:user][:password]
     
     if user.save
       render json: user.as_json(only: user_json_params)
@@ -159,6 +159,8 @@ class Api::V1::UsersController < ApplicationController
     
   private
     def user_params
-      params.require(:user).permit(:login, :email, :password, :hide_acc, :photo_url, :first_name, :last_name, :vkid, :background_url)
+      params.require(:user).permit(:login, :email, :password, :hide_acc, 
+          :photo_url, :first_name, :last_name, :vkid, :background_url,
+          :devices_attributes => [:token])
     end
 end

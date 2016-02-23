@@ -4,8 +4,18 @@ class Api::V1::SessionsController < ApplicationController
   def create
     user = User.find_by(login: session_params[:login])
     if user && user.authenticate(session_params[:password])
-      render json: user.as_json(only: user_json_params)
-        .merge(friends_count: user.friends.count), status: :ok
+      if session_params[:device_token]
+        device_token = session_params[:device_token]
+        # if device_token not presented add user new device
+        if !user.devices.where(token: device_token).present?
+          user.devices.create(token: device_token)
+        end
+        render json: user.as_json(only: user_json_params)
+          .merge(friends_count: user.friends.count), status: :ok
+      else
+        render json: { errors: "You should supply device token" }, status: :unprocessable_entity
+      end
+      
     else
       render json: { errors: "Invalid login or password" }, status: :unprocessable_entity
     end
@@ -21,6 +31,6 @@ class Api::V1::SessionsController < ApplicationController
   private
   
   def session_params
-    params.require(:user).permit(:login, :password)
+    params.require(:user).permit(:login, :password, :device_token)
   end
 end
