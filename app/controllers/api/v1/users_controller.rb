@@ -76,7 +76,17 @@ class Api::V1::UsersController < ApplicationController
   end
   
   def send_friendship_offer
-    if current_user.friend_request(User.find_by(login: params[:login]))
+    f_user = User.find_by(login: params[:login])
+    if current_user.friend_request(f_user)
+      # Collect device tokens in array of pushes
+      f_user_pushes = []
+      f_user.devices.each do |device|
+        f_user_pushes << APNS::Notification.new(device.token, 
+            "Вас хочет добавить в друзья #{current_user.login}" )
+      end
+      # Send pushes to all user devices
+      APNS.send_notifications(f_user_pushes)
+      
       render json: { success: "Invitation sent" }, status: :ok
     else
       render json: { errors: "Invitation has already been sent" }, status: :unprocessable_entity
