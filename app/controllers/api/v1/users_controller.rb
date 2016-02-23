@@ -82,7 +82,8 @@ class Api::V1::UsersController < ApplicationController
       f_user_pushes = []
       f_user.devices.each do |device|
         f_user_pushes << APNS::Notification.new(device.token, 
-            "Вас хочет добавить в друзья #{current_user.login}" )
+            :alert => "Заявка в друзья",
+            :user => { login: current_user.login })
       end
       # Send pushes to all user devices
       APNS.send_notifications(f_user_pushes)

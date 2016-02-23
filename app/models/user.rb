@@ -19,7 +19,7 @@ class User < ActiveRecord::Base
   has_and_belongs_to_many :bg_packs
   
   has_many :devices, dependent: :destroy
-  validates :devices, presence: true
+  # validates :devices, presence: true
   accepts_nested_attributes_for :devices
   
   validates :auth_token, uniqueness: true
