@@ -10,12 +10,9 @@ class Api::V1::SessionsController < ApplicationController
         if !user.devices.where(token: device_token).present?
           user.devices.create(token: device_token)
         end
-        render json: user.as_json(only: user_json_params)
-          .merge(friends_count: user.friends.count), status: :ok
-      else
-        render json: { errors: "You should supply device token" }, status: :unprocessable_entity
       end
-      
+      render json: user.as_json(only: user_json_params)
+          .merge(friends_count: user.friends.count), status: :ok
     else
       render json: { errors: "Invalid login or password" }, status: :unprocessable_entity
     end

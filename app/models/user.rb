@@ -16,6 +16,8 @@ class User < ActiveRecord::Base
   has_many :joining_posts, through: :accessions, class_name: 'Post'
   has_many :accessions
   
+  has_many :comments, dependent: :destroy # !!! !!!
+  
   has_and_belongs_to_many :bg_packs
   
   has_many :devices, dependent: :destroy
