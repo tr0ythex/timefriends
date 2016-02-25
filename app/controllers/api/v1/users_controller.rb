@@ -86,7 +86,7 @@ class Api::V1::UsersController < ApplicationController
             :user => { login: current_user.login })
       end
       # Send pushes to all user devices
-      APNS.send_notifications(f_user_pushes)
+      APNS.send_notifications(f_user_pushes) unless f_user_pushes.empty?
       
       render json: { success: "Invitation sent" }, status: :ok
     else

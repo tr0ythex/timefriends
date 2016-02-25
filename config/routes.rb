@@ -14,6 +14,8 @@ Rails.application.routes.draw do
         get 'bg_packs(/:name)(/:device_type)', to: 'bg_packs#index'
       end
       
+      post 'posts/:post_id/comments', to: "comments#create"
+      
       post 'login', to: 'sessions#create', as: 'login'
       delete 'logout', to: 'sessions#destroy', as: 'logout'
       get 'users(/:limit)(/:offset)', to: 'users#index'
