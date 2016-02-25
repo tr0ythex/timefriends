@@ -8,6 +8,14 @@ class Api::V1::CommentsController < ApplicationController
       comment.user = current_user
       if comment.save
         render json: comment, status: :created
+        p_user = post.user
+        p_user_pushes = []
+        p_user.devices.each do |device|
+          p_user_pushes << APNS::Notification.new(device.token, 
+              :alert => "Новый комментарий")
+        end
+        # Send pushes to all user devices
+        APNS.send_notifications(p_user_pushes) unless p_user_pushes.empty?
       else
         render json: { errors: comment.errors }, status: :unprocessable_entity
       end
