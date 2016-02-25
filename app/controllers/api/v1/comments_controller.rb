@@ -8,6 +8,8 @@ class Api::V1::CommentsController < ApplicationController
       comment.user = current_user
       if comment.save
         render json: comment, status: :created
+        
+        # Prepare pushes
         p_user = post.user
         p_user_pushes = []
         p_user.devices.each do |device|
@@ -20,7 +22,8 @@ class Api::V1::CommentsController < ApplicationController
         render json: { errors: comment.errors }, status: :unprocessable_entity
       end
     else
-      render json: { errors: "Post with id '#{params[:post_id]}' doesn't exist" }
+      render json: { errors: "Post with id '#{params[:post_id]}' doesn't exist" },
+        status: :unprocessable_entity
     end
   end
   

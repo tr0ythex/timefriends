@@ -20,6 +20,8 @@ class Api::V1::SessionsController < ApplicationController
   
   def destroy
     user = current_user
+    user.devices.where(token: params[:device_token]).destroy_all
+    
     user.generate_auth_token!
     user.save
     head :ok

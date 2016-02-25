@@ -128,10 +128,22 @@ class Api::V1::PostsController < ApplicationController
   
   def join
     post = Post.find(params[:id])
+    # if it's not your post
     if !current_user.posts.include?(post)
+      # if you have not already joined this post
       if !post.joined_users.include?(current_user)
         post.joined_users << current_user
         render json: { success: "You successfully joined to this post" }, status: :ok
+        
+        # Prepare pushes
+        p_user = post.user
+        p_user_pushes = []
+        p_user.devices.each do |device| # collect pushes for all user devices
+          p_user_pushes << APNS::Notification.new(device.token, 
+              :alert => "К вашей записи присоединились")
+        end
+        # Send pushes to all user devices
+        APNS.send_notifications(p_user_pushes) unless p_user_pushes.empty?
       else
         render json: { errors: "You have already joined to this post" }, status: :unprocessable_entity
       end
