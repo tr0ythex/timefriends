@@ -6,20 +6,32 @@ class Api::V1::PostsController < ApplicationController
     if user
       if params[:date]
         render json: user.posts
-          .where("strftime('%Y-%m-%d', created_at) = ?", params[:date])
+          .where("strftime('%Y-%m-%d', created_at) = ?", params[:date]).includes(comments: :user)
           .to_json(
             :except => :user_id, 
             :include => [
                {:user => { only: [:id, :login, :photo_url] }}, 
-               :joined_users => { only: :id }
+               {:joined_users => { only: :id }},
+               {:comments => {
+                  only: [:id, :body],
+                  :include => [
+                    {:user => { only: :login }}
+                  ]
+               }}
             ]
           )
       else
-        render json: user.posts.to_json(
+        render json: user.posts.includes(comments: :user).to_json(
           :except => :user_id, 
           :include => [
              {:user => { only: [:id, :login, :photo_url] }}, 
-             :joined_users => { only: :id }
+             {:joined_users => { only: :id }},
+             {:comments => {
+                only: [:id, :body],
+                :include => [
+                  {:user => { only: :login }}
+                ]
+             }}
           ])
       end
     else
@@ -47,7 +59,13 @@ class Api::V1::PostsController < ApplicationController
         :except => :user_id, 
         :include => [
           {:user => { only: [:id, :login, :photo_url] }}, 
-          :joined_users => { only: :id }
+          {:joined_users => { only: :id }},
+          {:comments => {
+            only: [:id, :body],
+            :include => [
+              {:user => { only: :login }}
+            ]
+          }}
         ]
       )
     else
@@ -60,9 +78,9 @@ class Api::V1::PostsController < ApplicationController
   def my_posts(date)
     my_posts = []
     if !date
-      my_posts = current_user.posts
+      my_posts = current_user.posts.includes(comments: :user)
     else
-      my_posts = current_user.posts.where(created_at_date, date)
+      my_posts = current_user.posts.where(created_at_date, date).includes(comments: :user)
     end
     my_posts
   end
@@ -71,11 +89,11 @@ class Api::V1::PostsController < ApplicationController
     friends_posts = []
     if !date
       current_user.friends.to_a.each do |friend|
-        friends_posts += friend.posts
+        friends_posts += friend.posts.includes(comments: :user)
       end
     else
       current_user.friends.to_a.each do |friend|
-        friends_posts += friend.posts.where(created_at_date, date)
+        friends_posts += friend.posts.where(created_at_date, date).includes(comments: :user)
       end
     end
     friends_posts

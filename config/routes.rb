@@ -15,6 +15,7 @@ Rails.application.routes.draw do
       end
       
       post 'posts/:post_id/comments', to: "comments#create"
+      delete 'posts/:post_id/comments/:id', to: "comments#destroy"
       
       post 'login', to: 'sessions#create', as: 'login'
       delete 'logout', to: 'sessions#destroy', as: 'logout'
