@@ -33,8 +33,11 @@ class Api::V1::CommentsController < ApplicationController
     if current_user.posts.where(id: post.id).present? || 
        current_user.comments.where(id: comment.id).present?
       comment.destroy
+      head :ok
+    else
+      head :unprocessable_entity
     end
-    head :ok
+    
   end
   
   private
