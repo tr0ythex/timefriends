@@ -6,7 +6,7 @@ class Api::V1::PostsController < ApplicationController
     if user
       if params[:date]
         render json: user.posts
-          .where("strftime('%Y-%m-%d', created_at) = ?", params[:date]).includes(comments: :user)
+          .where(created_at_date, params[:date]).includes(comments: :user)
           .to_json(
             :except => :user_id, 
             :include => [

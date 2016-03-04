@@ -20,6 +20,10 @@ class ApplicationController < ActionController::Base
   end
   
   def created_at_date
-    "strftime('%Y-%m-%d', created_at) = ?"
+    if Rails.env.production? # for postgres
+      "to_char(created_at, 'YYYY-MM-DD') = ?"
+    else # for sqlite
+      "strftime('%Y-%m-%d', created_at) = ?"
+    end
   end
 end
