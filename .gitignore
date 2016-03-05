@@ -16,3 +16,5 @@
 !/log/.keep
 /tmp
 /ssh_add.sh
+/spring
+/spring-1000
