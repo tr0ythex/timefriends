@@ -156,7 +156,7 @@ class Api::V1::UsersController < ApplicationController
       if current_user == user
         render json: { errors: "You can't be your friend" }, status: :unprocessable_entity
       else
-        if current_user.friends_with?(user)
+        if current_user.friends.where(login: user.login).present?
           render json: { success: "#{user.login} is your friend" }
         else
           render json: { success: "#{user.login} isn't your friend" }
