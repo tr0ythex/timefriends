@@ -21,7 +21,7 @@ class Api::V1::PostsController < ApplicationController
             ]
           )
       else
-        render json: user.posts.includes(comments: :user).to_json(
+        render json: user.posts.includes(comments: :user).group_by{|p| p.created_at.to_date}.to_json(
           :except => :user_id, 
           :include => [
              {:user => { only: [:id, :login, :photo_url] }}, 
