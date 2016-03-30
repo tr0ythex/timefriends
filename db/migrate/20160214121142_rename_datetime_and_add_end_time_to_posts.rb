@@ -1,7 +1,7 @@
 class RenameDatetimeAndAddEndTimeToPosts < ActiveRecord::Migration
   def change
     rename_column :posts, :datetime, :start_time
-    change_column :posts, :start_time, 'timestamp USING CAST(start_time AS timestamp without time zone)'
+    change_column :posts, :start_time, :timestampz
     add_column :posts, :end_time, :datetime
   end
 end
