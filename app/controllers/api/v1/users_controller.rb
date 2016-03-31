@@ -123,7 +123,7 @@ class Api::V1::UsersController < ApplicationController
     r_friend = User.find_by(login: params[:login])
     if r_friend
       if r_friend == current_user
-        render json: { errors: "You cant' be your friend" }, status: :unprocessable_entity
+        render json: { errors: "You can't be your friend" }, status: :unprocessable_entity
       else
         if current_user.friends_with?(r_friend)
           current_user.remove_friend(r_friend)
@@ -147,7 +147,12 @@ class Api::V1::UsersController < ApplicationController
   end
   
   def friends
-    render json: current_user.friends.to_a, only: user_json_params.tap(&:pop)
+    users_output = []
+    current_user.friends.to_a.each do |user|
+      users_output << user.as_json(only: user_json_params.tap(&:pop))
+        .merge(friends_count: user.friends.count)
+    end
+    render json: users_output
   end
   
   def friends_with
