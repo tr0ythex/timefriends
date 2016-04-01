@@ -14,7 +14,13 @@ class Api::V1::CommentsController < ApplicationController
         p_user_pushes = []
         p_user.devices.each do |device|
           p_user_pushes << APNS::Notification.new(device.token, 
-              :alert => "Новый комментарий")
+              :alert => comment.as_json(
+                :except => [:user_id, :post_id], 
+                :include => [
+                  {:user => { only: :login}}, 
+                  {:post => { only: :body}}
+                ]
+              ))
         end
         # Send pushes to all user devices
         APNS.send_notifications(p_user_pushes) unless p_user_pushes.empty?
