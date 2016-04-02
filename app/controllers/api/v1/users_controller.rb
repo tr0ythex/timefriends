@@ -82,7 +82,8 @@ class Api::V1::UsersController < ApplicationController
       f_user_pushes = []
       f_user.devices.each do |device|
         f_user_pushes << APNS::Notification.new(device.token, 
-            :alert => "Заявка в друзья")
+            :alert => "Заявка в друзья от #{current_user}",
+            :badge => 1, :sound => 'default', :other => {:sent => {:photo_url => current_user.photo_url, :type => 0}})
       end
       # Send pushes to all user devices
       APNS.send_notifications(f_user_pushes) unless f_user_pushes.empty?
