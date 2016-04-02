@@ -161,7 +161,8 @@ class Api::V1::PostsController < ApplicationController
         p_user_pushes = []
         p_user.devices.each do |device| # collect pushes for all user devices
           p_user_pushes << APNS::Notification.new(device.token, 
-              :alert => "К вашей записи присоединились")
+              :alert => "#{current_user.login} хочет присоединиться к '#{post.body}'",
+              :badge => 1, :sound => 'default', :other => {:sent => {:photo_url => current_user.photo_url, :type => 2}})
         end
         # Send pushes to all user devices
         APNS.send_notifications(p_user_pushes) unless p_user_pushes.empty?
