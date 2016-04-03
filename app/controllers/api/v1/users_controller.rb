@@ -36,7 +36,7 @@ class Api::V1::UsersController < ApplicationController
     # user.password = params[:user][:password]
     
     if user.save
-      I18n.locale = user_params[:locale]
+      I18n.locale = user_params[:locale] || I18n.default_locale
       render json: user.as_json(only: user_json_params)
         .merge(friends_count: user.friends.count), status: :created
     else
