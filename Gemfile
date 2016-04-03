@@ -33,6 +33,8 @@ gem 'houston'
 
 gem 'apns'
 
+gem 'rails-i18n'
+
 # Use Unicorn as the app server
 # gem 'unicorn'
 
