@@ -27,6 +27,7 @@ class User < ActiveRecord::Base
   validates :auth_token, uniqueness: true
   validates :login, :email, presence: true, uniqueness: true
   validates :hide_acc, inclusion: [true, false]
+  validates :locale, presence: true
 
   def generate_auth_token!
     # return if auth_token.present?

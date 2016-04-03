@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20160224110445) do
+ActiveRecord::Schema.define(version: 20160403150341) do
 
   create_table "accessions", force: :cascade do |t|
     t.integer  "user_id"
@@ -108,6 +108,7 @@ ActiveRecord::Schema.define(version: 20160224110445) do
     t.string   "photo_content_type"
     t.integer  "photo_file_size"
     t.datetime "photo_updated_at"
+    t.string   "locale"
   end
 
 end
