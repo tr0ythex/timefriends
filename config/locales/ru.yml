@@ -1,0 +1,4 @@
+ru:
+  new_comment_push: "Новый комментарий от %{user} к '%{post}'"
+  post_joining_push: "%{user} хочет присоединиться к '%{post}'"
+  friend_request_push: "Заявка в друзья от %{user}"

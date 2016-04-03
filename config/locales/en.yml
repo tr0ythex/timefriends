@@ -20,4 +20,6 @@
 # available at http://guides.rubyonrails.org/i18n.html.
 
 en:
-  hello: "Hello world"
+  new_comment_push: "New comment by %{user} to '%{post}'"
+  post_joining_push: "%{user} wants to join to '%{post}'"
+  friend_request_push: "Friend request from %{user}"
