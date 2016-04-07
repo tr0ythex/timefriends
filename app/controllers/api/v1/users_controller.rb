@@ -83,7 +83,7 @@ class Api::V1::UsersController < ApplicationController
       f_user_pushes = []
       f_user.devices.each do |device|
         f_user_pushes << APNS::Notification.new(device.token, 
-            :alert => "#{I18n.t :new_comment_push, user: f_user.login}",
+            :alert => "#{I18n.t :friend_request_push, user: f_user.login}",
             :badge => 1, :sound => 'default', :other => {:sent => {:photo_url => current_user.photo_url, :type => 0}})
       end
       # Send pushes to all user devices
