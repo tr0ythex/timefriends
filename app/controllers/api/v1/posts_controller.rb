@@ -158,6 +158,7 @@ class Api::V1::PostsController < ApplicationController
         
         # Prepare pushes
         p_user = post.user
+        I18n.locale = p_user.locale || I18n.default_locale
         p_user_pushes = []
         p_user.devices.each do |device| # collect pushes for all user devices
           p_user_pushes << APNS::Notification.new(device.token, 

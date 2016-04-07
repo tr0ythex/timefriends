@@ -36,7 +36,7 @@ class Api::V1::UsersController < ApplicationController
     # user.password = params[:user][:password]
     
     if user.save
-      I18n.locale = user_params[:locale] || I18n.default_locale
+      # I18n.locale = user_params[:locale] || I18n.default_locale
       render json: user.as_json(only: user_json_params)
         .merge(friends_count: user.friends.count), status: :created
     else
@@ -80,6 +80,7 @@ class Api::V1::UsersController < ApplicationController
     f_user = User.find_by(login: params[:login])
     if current_user.friend_request(f_user)
       # Collect device tokens in array of pushes
+      I18n.locale = f_user.locale || I18n.default_locale
       f_user_pushes = []
       f_user.devices.each do |device|
         f_user_pushes << APNS::Notification.new(device.token, 
