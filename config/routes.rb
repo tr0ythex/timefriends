@@ -4,6 +4,7 @@ Rails.application.routes.draw do
       resources :users, only: [:create, :show] do
         get 'posts(/:date)', to: 'posts#index'
         get 'post_days(/:year)(/:month)', to: 'posts#post_days'
+        get 'friends', to: 'users#friends'
         # resources :posts, only: [:index]
       end
       

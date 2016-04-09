@@ -151,10 +151,19 @@ class Api::V1::UsersController < ApplicationController
   
   def friends
     users_output = []
-    current_user.friends.to_a.each do |user|
-      users_output << user.as_json(only: user_json_params.tap(&:pop))
-        .merge(friends_count: user.friends.count)
+    if params[:user_id]
+      f_user = User.find(params[:user_id])
+      f_user.friends.to_a.each do |user|
+        users_output << user.as_json(only: user_json_params.tap(&:pop))
+          .merge(friends_count: user.friends.count)
+      end
+    else
+      current_user.friends.to_a.each do |user|
+        users_output << user.as_json(only: user_json_params.tap(&:pop))
+          .merge(friends_count: user.friends.count)
+      end
     end
+    
     render json: users_output
   end
   
