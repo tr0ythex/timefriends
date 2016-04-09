@@ -46,7 +46,7 @@ class Api::V1::PostsController < ApplicationController
     case params[:feed]
     when "my"
       posts = my_posts(params[:date])
-    when "friends"
+    when "my_friends"
       posts = friends_posts(params[:date])
     when "all"
       posts = my_posts(params[:date]) + friends_posts(params[:date])
