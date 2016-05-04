@@ -136,7 +136,7 @@ class Api::V1::PostsController < ApplicationController
   def update
     post = current_user.posts.find(params[:id])
     if post.update(post_params)
-      head :ok
+      render json: { success: "Post has been updated successfully" }, status: :ok
     else
       render json: post.errors, status: :unprocessable_entity
     end
