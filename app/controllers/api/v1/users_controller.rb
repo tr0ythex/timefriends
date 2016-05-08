@@ -54,6 +54,7 @@ class Api::V1::UsersController < ApplicationController
   def update
     user = current_user
     
+    # update photo
     if params[:user][:photo_data]
       photo = decode_picture_data(params[:user][:photo_data])
       if user.update(photo: photo)
@@ -63,7 +64,22 @@ class Api::V1::UsersController < ApplicationController
       else
         render json: user.errors, status: :unprocessable_entity
       end
-    elsif user.update(user_params)
+    end
+    
+    # update custom background
+    if params[:user][:custom_bg_data]
+      custom_bg = decode_picture_data(params[:user][:custom_bg_data])
+      if user.update(custom_bg: custom_bg)
+        user.update(custom_bg_url: user.custom_bg.url)
+        render json: user.as_json(only: user_json_params)
+          .merge(friends_count: user.friends.count), status: :ok
+      else
+        render json: user.errors, status: :unprocessable_entity
+      end
+    end
+    
+    # update other user params
+    if user.update(user_params)
       render json: user.as_json(only: user_json_params)
         .merge(friends_count: user.friends.count), status: :ok
     else
@@ -187,7 +203,7 @@ class Api::V1::UsersController < ApplicationController
   private
     def user_params
       params.require(:user).permit(:login, :email, :password, :hide_acc, 
-          :photo_url, :first_name, :last_name, :vkid, :background_url, :locale,
+          :photo_url, :custom_bg_url, :first_name, :last_name, :vkid, :background_url, :locale,
           :devices_attributes => [:token])
     end
 end

@@ -11,6 +11,13 @@ class User < ActiveRecord::Base
   # styles: { small: "64x64", med: "100x100", large: "200x200" }
   validates_attachment :photo, content_type: { content_type: ["image/jpg", "image/jpeg", "image/png", "image/gif"] }
   validates_attachment_file_name :photo, :matches => [/png\Z/, /jpe?g\Z/, /gif\Z/]
+  
+  has_attached_file :custom_bg, 
+    :url => "/users/:id/bg/:basename.:extension",
+    :path => ":rails_root/public/users/:id/bg/:basename.:extension",
+    :default_url => "/users/:id/bg/nothing.png"
+  validates_attachment :custom_bg, content_type: { content_type: ["image/jpg", "image/jpeg", "image/png", "image/gif"] }
+  validates_attachment_file_name :custom_bg, :matches => [/png\Z/, /jpe?g\Z/, /gif\Z/]
 
   has_many :posts, dependent: :destroy
   has_many :joining_posts, through: :accessions, class_name: 'Post'
