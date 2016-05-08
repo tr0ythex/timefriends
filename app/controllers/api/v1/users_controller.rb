@@ -78,7 +78,7 @@ class Api::V1::UsersController < ApplicationController
       end
     end
     
-    # unless params[:user][:photo_data] || params[:user][:custom_bg_data]
+    unless params[:user][:photo_data] || params[:user][:custom_bg_data]
       # update other user params
       if user.update(user_params)
         render json: user.as_json(only: user_json_params)
@@ -86,7 +86,7 @@ class Api::V1::UsersController < ApplicationController
       else
         render json: user.errors, status: :unprocessable_entity
       end
-    # end
+    end
   end
   
   def destroy
