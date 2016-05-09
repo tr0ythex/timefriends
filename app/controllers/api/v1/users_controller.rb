@@ -4,7 +4,7 @@ class Api::V1::UsersController < ApplicationController
              :accept_friendship_offer, 
              :decline_friendship_offer, 
              :requested_friends, :pending_friends, 
-             :friends, :friends_with, :remove_friend]
+             :friends, :friends_with, :remove_friend, :update_locale]
   
   def index
     users = User.all
@@ -92,6 +92,15 @@ class Api::V1::UsersController < ApplicationController
   def destroy
     current_user.destroy
     head :no_content
+  end
+  
+  def update_locale
+    if user.update(params[:user][:locale])
+      render json: user.as_json(only: user_json_params)
+        .merge(friends_count: user.friends.count), status: :ok
+    else
+      render json: user.errors, status: :unprocessable_entity
+    end
   end
   
   def send_friendship_offer

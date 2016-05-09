@@ -13,6 +13,7 @@ Rails.application.routes.draw do
         get 'posts(/:feed)(/:date)', to: 'posts#feed'
         get 'post_days(/:year)(/:month)', to: 'posts#post_days'
         get 'bg_packs(/:name)(/:device_type)', to: 'bg_packs#index'
+        post 'update_locale', to: 'users#update_locale'
       end
       
       post 'posts/:post_id/comments', to: "comments#create"
