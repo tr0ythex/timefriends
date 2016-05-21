@@ -62,7 +62,7 @@ class Api::V1::PostsController < ApplicationController
         :except => :user_id, 
         :include => [
           {:user => { only: [:id, :login, :photo_url] }}, 
-          {:joined_users => { only: :id }},
+          {:joined_users => { only: [:id, :login, :photo_url, :first_name, :last_name] }},
           {:comments => {
             only: [:id, :body],
             :include => [
